@@ -6,7 +6,10 @@
 import express from 'express'
 // You can import your own files into each other.
 import modesOfTransport from './data.js'
-
+//* import mongoose
+import mongoose from 'mongoose'
+//* importing my modesOfTransport model
+import ModeOfTransport from '.models/modeOfTransport.js'
 const app = express()
 
 // ! 🚨 We need this line of code for posting JSON to express
@@ -35,8 +38,9 @@ app.get('/modesOfTransport/:name', function(req, res) {
 app.post('/modeOfTransport', function(req, res) {
   // Get the new destination from the body of request
   const newModeOfTransport = req.body
-  // Add destination to existing destinations
-  modesOfTransport.push(newModeOfTransport)
+  // Create the document in the database
+
+  ModeOfTransport.create(newModeOfTransport)
   // Send back our destination with appropriate status code.
   res.status(201).send(newModeOfTransport)
 })
@@ -88,3 +92,9 @@ console.log(modesOfTransport)
 app.listen(3000, () => {
   console.log('Server is running on port 3000!')
 })
+
+
+//this will connect to our database usingmongoose
+const url = ('mongodb://127.0.0.1:27017/modesOfTransport-db')
+const dbname = 'modesOfTransport-db'
+mongoose.connect(`${url}${dbname}`)

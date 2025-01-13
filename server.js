@@ -13,10 +13,18 @@ import mongoose from 'mongoose'
 
  import modeOfTransportController from './controllers/modeOfTransportController.js'
 
+
+import methodOverride from 'method-override'
+//const methodOverride = require('method-override')
 const app = express()
 
 // ! 🚨 We need this line of code for posting JSON to express
 app.use(express.json())
+
+
+app.use(express.urlencoded({extended: false}))
+
+app.use(methodOverride('_method'))
 
 app.use('/', modeOfTransportController)
 

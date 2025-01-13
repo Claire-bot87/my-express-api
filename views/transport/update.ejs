@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Transport</title>
+</head>
+<body>
+  <h1>Update <%= transport.name %></h1>
+  <form action="/transport/<%=transport._id%>?_method=PUT" method="POST">
+    <label for="name">Name:</label>
+    <input type="text" name="name" id="name" value="<%=transport.name%>">
+    <label for="type">Type:</label>
+    <input type="text" name="type" id="type" value="<%=transport.type%>">
+    <label for="model">Model:</label>
+    <input type="text" name="model" id="model" value="<%=transport.model%>">
+    <button type="submit">Update transport</button>   
+  </form>
+
+</body>
+</html>

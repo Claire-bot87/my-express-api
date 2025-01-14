@@ -14,4 +14,5 @@ const modeOfTransportSchema = new mongoose.Schema({
 
 })//export the schema as a model
 //! the first arguemnt to the model MUST be a string pascalcase(uppercase words), singular
+
 export default mongoose.model('ModeOfTransport', modeOfTransportSchema)

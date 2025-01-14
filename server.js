@@ -11,12 +11,31 @@ import mongoose from 'mongoose'
 //* importing my modesOfTransport model
  import ModeOfTransport from './models/modeOfTransport.js'
 
+ import User from './models/user.js'
+
  import modeOfTransportController from './controllers/modeOfTransportController.js'
 
+ import userController from './controllers/userController.js'
 
 import methodOverride from 'method-override'
 //const methodOverride = require('method-override')
+
+import session from 'express-session'
+
+import session from 'express-session'
+
 const app = express()
+
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized:true,
+  cookie:{
+    secure:false, //i sthis using https?
+    httoOnly: true,
+    maxAge: 1000 * 60 * 60 * 24,
+  }
+}))
 
 // ! 🚨 We need this line of code for posting JSON to express
 app.use(express.json())
@@ -26,7 +45,12 @@ app.use(express.urlencoded({extended: false}))
 
 app.use(methodOverride('_method'))
 
+app.use(logger)
+
 app.use('/', modeOfTransportController)
+
+app.use('/', userController)
+
 
 
 
@@ -202,6 +226,7 @@ app.listen(3000, () => {
 
 
 //this will connect to our database usingmongoose
-const url = ('mongodb://127.0.0.1:27017/modesOfTransport-db')
+const url = 'mongodb://127.0.0.1:27017/'
+//mongoose.connect('mongodb://127.0.0.1:27017/destinations-db')
 const dbname = 'modesOfTransport-db'
 mongoose.connect(`${url}${dbname}`)

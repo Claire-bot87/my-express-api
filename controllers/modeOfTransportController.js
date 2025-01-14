@@ -19,7 +19,9 @@ router.route('/').get(async function(req, res, next){
 router.route('/transport').post(async function (req, res, next) {
     try {
       console.log(req.body)
-   
+   if(!req.session.user){
+    return res.status(401).send(("you must be logged in to save a mode of transport"))
+   }
       // Create the document in the database
       const newModeOfTransport = await ModeOfTransport.create(req.body)
       // Send back our destination with appropriate status code.
@@ -71,10 +73,10 @@ router.route('/transport/:id').get(async function (req, res, next) {
     }
 });
 
-router.route('/modesOfTransport').get(async function(req, res) { // call this function
-    const allModesOfTransport = await ModeOfTransport.find()
-    res.send(allModesOfTransport)
-})
+// router.route('/modesOfTransport').get(async function(req, res) { // call this function
+//     const allModesOfTransport = await ModeOfTransport.find()
+//     res.send(allModesOfTransport)
+// })
 
 router.route('/modesOfTransport/:name').get(async function(req, res) {
       const modeOfTransport = await ModeOfTransport.findOne({ name: { $regex: new RegExp(`^${req.params.name}$`, 'i')}})
@@ -118,17 +120,18 @@ router.route('/transport/:id').put(async function (req, res) {
       })
       
 
-router.route('/transport/:id').delete(async function(req, res){
-    const transportId = req.params.id
-        const transport = await ModeOfTransport.findById(transportId)
-        //const updateDestination = req.body
-        if(!transport) {
-          return res.send({message: "Transport doesn't exist."})
-        }
+// router.route('/transport/:id').delete(async function(req, res){
+//     const transportId = req.params.id
+//         const transport = await ModeOfTransport.findById(transportId)
+//         //const updateDestination = req.body
+//         if(!transport) {
+//           return res.send({message: "Transport doesn't exist."})
+//         }
         
-        await ModeOfTransport.findByIdAndDelete(transportId)
+//         await ModeOfTransport.findByIdAndDelete(transportId)
     
-      res.redirect('/transport')
-})
+//       res.redirect('/transport')
+// })
+
 
 export default router

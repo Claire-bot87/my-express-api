@@ -7,6 +7,8 @@ import ModeOfTransport from '../models/modeOfTransport.js'
 const router = express.Router()  
 
 
+
+
 router.route('/').get(async function(req, res, next){
     try{
         res.render('home.ejs')
@@ -20,8 +22,11 @@ router.route('/transport').post(async function (req, res, next) {
     try {
       console.log(req.body)
    if(!req.session.user){
-    return res.status(401).send(("you must be logged in to save a mode of transport"))
+    return res.status(402).send({message: "you must be logged in to save a mode of transport"})
    }
+
+req.body.user = req.session.user
+
       // Create the document in the database
       const newModeOfTransport = await ModeOfTransport.create(req.body)
       // Send back our destination with appropriate status code.
@@ -41,16 +46,22 @@ router.route('/transport').post(async function (req, res, next) {
   })
 
 
-router.route('/modesOfTransport').post(async function (req,res){
-// create the document in the database
-const newModeOfTransport = await ModeOfTransport.create(req.body)
-//send back our destination with appropriate status code
-res.status(201).send(newModeOfTransport)
-})
+// router.route('/modesOfTransport').post(async function (req,res){
+  
+// // create the document in the database
+// const newModeOfTransport = await ModeOfTransport.create(req.body)
+// //send back our destination with appropriate status code
+// res.status(201).send(newModeOfTransport)
+// })
 
 router.route('/transport').get(async function (req, res, next) {
     try{
         const allModesOfTransport = await ModeOfTransport.find()
+
+        // populate the user field
+        const allTransports = await ModeOfTransport.find().populate('user')
+console.log(allTransports)
+
         res.render('transport/index.ejs', {
             allModesOfTransport: allModesOfTransport
         })
@@ -87,17 +98,32 @@ router.route('/modesOfTransport/:name').get(async function(req, res) {
 )
 
 
+
 router.route('/transport/:id').delete(async function (req, res) {
+  if(!req.session.user){
+    return res.status(402).send({message: "you must be logged in to delete a mode of transport"})
+   }
     const modeOfTransportId = req.params.id
   
-    const transport = await ModeOfTransport.findById(modeOfTransportId)
-  
+   // const transport = await ModeOfTransport.findById(modeOfTransportId)
+    const transport = await ModeOfTransport.findById(modeOfTransportId).populate('user')
+
+    // compare the user who is currently logged in (req.session.user)
+    // with the user ON the transport (transport.user)
+// console.log(req.session.user._id)
+// console.log(transport.user._id)
+
+if (!transport.user._id.equals(req.session.user._id)) {
+  return res.status(402).send({ message: "this is not your destination to delete!"})
+}
     if (!transport) {
       return res.send({ message: "Transport doesn't exist." })
     }
     await ModeOfTransport.findByIdAndDelete(modeOfTransportId)
     res.redirect('/transport')
   })
+
+
 
 
   router.route('/transport/update/:id').get(async function(req, res, next) {
@@ -113,7 +139,16 @@ router.route('/transport/:id').delete(async function (req, res) {
 
 
 router.route('/transport/:id').put(async function (req, res) {
+  if(!req.session.user){
+    return res.status(402).send({message: "you must be logged in to update a mode of transport"})
+   }
       const modeOfTransportId = req.params.id
+
+      const transport = await ModeOfTransport.findById(modeOfTransportId).populate('user')
+
+      if (!transport.user._id.equals(req.session.user._id)) {
+        return res.status(402).send({ message: "this is not your destination to update!"})
+      }
       const updateModesOfTransport = await ModeOfTransport.findByIdAndUpdate(modeOfTransportId, req.body, {new:true})
     
       res.redirect('/transport')
@@ -132,6 +167,9 @@ router.route('/transport/:id').put(async function (req, res) {
     
 //       res.redirect('/transport')
 // })
+
+
+
 
 
 export default router

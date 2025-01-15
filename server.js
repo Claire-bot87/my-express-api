@@ -22,7 +22,11 @@ import methodOverride from 'method-override'
 
 import session from 'express-session'
 
-import session from 'express-session'
+import mongoSanitize from 'express-mongo-sanitize'
+
+// import dotenv to extract environment variables from the .env file
+import dotenv from 'dotenv'
+dotenv.config() // initalises .env
 
 const app = express()
 
@@ -40,12 +44,13 @@ app.use(session({
 // ! 🚨 We need this line of code for posting JSON to express
 app.use(express.json())
 
+app.use(mongoSanitize())
 
 app.use(express.urlencoded({extended: false}))
 
 app.use(methodOverride('_method'))
 
-app.use(logger)
+//app.use(logger)
 
 app.use('/', modeOfTransportController)
 

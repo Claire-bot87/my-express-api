@@ -14,7 +14,7 @@ router.route('/auth/signup').post(async function (req, res, next) {
       // Create the document in the database
       const newUser = await User.create(req.body)
       // Send back our destination with appropriate status code.
-      res.redirect('/login')
+      res.redirect('/auth/login')
     } catch (e) {
       next(e)
     }
@@ -59,12 +59,18 @@ if(!user.isPasswordValid(req.body.password)){
 }
 
 req.session.user = user // adds the user to the current session
-res.send({message: "Login succesful"})
+res.redirect('/')
+//res.send({message: "Login succesful"})
 }
 catch(e){
   next(e)
 }
 })
+
+router.route('/')
+  .get((req, res) => {
+    res.render('nav', { user: req.session.user });
+  });
 
 
 

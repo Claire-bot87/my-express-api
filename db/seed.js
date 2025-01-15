@@ -18,6 +18,22 @@ async function seed(){
 // console.log('clearing the database)
 // await mongoose.connection.db.dropDatabase()
 
+
+
+//we now need to make sure all transport have a user field set.
+//? let's seed a user first , and then use that user for our transport
+
+const user = await UserActivation.creare({
+    username: "Claire Louise Tosse",
+    email: "clb579@gmail.com",
+    password: "NewPassword1"
+})
+//add the user to our transport
+transport.forEach((transport) => {
+    // add the user to this destination
+    transport.user = user
+})
+
  console.log('seed new destinations🌱')
 const newModeOfTransport = await ModeOfTransport.create(transport)
 

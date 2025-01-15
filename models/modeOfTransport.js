@@ -10,7 +10,10 @@ const modeOfTransportSchema = new mongoose.Schema({
     type: {type: String, required:false},
     // name:{type: String, required: true},
     model:{type: String , required: false},
-    name: {type: String, required:false}
+    name: {type: String, required:false},
+    // adding arelationship between transport and user
+    //? This is called a reference relationship
+    user:{type:mongoose.Schema.Types.ObjectId, ref:'User', required:true}
 
 })//export the schema as a model
 //! the first arguemnt to the model MUST be a string pascalcase(uppercase words), singular

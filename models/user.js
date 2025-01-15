@@ -3,6 +3,8 @@
 
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import validator from 'validator';
+
 
 //* create a schema for my collection
 
@@ -10,7 +12,16 @@ const userSchema = new mongoose.Schema({
   
     username: {type: String, required: true, unique: true},
     // name:{type: String, required: true},
-    email:{type: String , required: true, unique: true},
+    email:
+    {
+        type: String ,
+        required: true, 
+        unique: true,
+        validate:{
+        validator: validator.isEmail,
+        message:"please enter a valid email"
+        }
+    },
     password: {type: String, required:true}
 
 })//export the schema as a model

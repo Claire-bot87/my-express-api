@@ -2,6 +2,7 @@
 //*for development purposes
 import mongoose from "mongoose"
 import ModeOfTransport from '../models/modeOfTransport.js'
+import User from '../models/user.js'
 import transport from '../data.js'
 
 
@@ -12,20 +13,20 @@ import transport from '../data.js'
 async function seed(){
     console.log('connecting to database🌱')
 
- await mongoose.connect('mongodb://127.0.0.1:27017/destinations-db')
+ await mongoose.connect('mongodb://127.0.0.1:27017/modesOfTransport-db')
 
 //! this code wieipes the database clean:
-// console.log('clearing the database)
-// await mongoose.connection.db.dropDatabase()
+console.log('clearing the database')
+await mongoose.connection.db.dropDatabase()
 
 
 
 //we now need to make sure all transport have a user field set.
 //? let's seed a user first , and then use that user for our transport
 
-const user = await UserActivation.creare({
-    username: "Claire Louise Tosse",
-    email: "clb579@gmail.com",
+const user = await User.create({
+    username: "Claire Elizabeth Tosse",
+    email: "clb5791@gmail.com",
     password: "NewPassword1"
 })
 //add the user to our transport
@@ -38,6 +39,17 @@ transport.forEach((transport) => {
 const newModeOfTransport = await ModeOfTransport.create(transport)
 
 console.log(newModeOfTransport)
+
+//add a comment to my first transport
+const comment = {
+    content: "It's not great",
+    user:user
+}
+
+newModeOfTransport[0].comments.push(comment)
+
+await newModeOfTransport[0].save()
+
 console.log('bye!🌱')
 await mongoose.disconnect()
 }

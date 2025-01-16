@@ -17,6 +17,8 @@ import mongoose from 'mongoose'
 
  import userController from './controllers/userController.js'
 
+ import commentController from './controllers/commentController.js'
+
 import methodOverride from 'method-override'
 //const methodOverride = require('method-override')
 
@@ -56,7 +58,7 @@ app.use('/', modeOfTransportController)
 
 app.use('/', userController)
 
-
+app.use('/', commentController)
 
 
 // app.get('/modesOfTransport', async function(req, res) { // call this function
